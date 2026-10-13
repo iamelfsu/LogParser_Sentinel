@@ -97,15 +97,6 @@ def generate_crisis_report(data, output_path):
                 
         f.write("\n" + "-" * 50 + "\n")
 
-        # We write the results of the error detectors (detectors.py) into the report.
-        f.write(f" ERROR SPIKES ({detectors.SPIKE_LIMIT} OR MORE ERRORS IN THE SAME MINUTE):\n")
-        # If no minute reached the error limit:
-        if not data["error_spikes"]:
-            f.write(" - Status Stable: No error spikes found.\n")
-        # We loop through every spike and write its minute and error count.
-        for minute, count in data["error_spikes"]:
-            f.write(f" -> {minute} : {count} errors in one minute!\n")
-        f.write("\n")
 
         f.write(" ISOLATED CRITICAL CRIDER GONE LOGS:\n")
         # If our collected crisis lines list is completely empty (Meaning if there are no 'ERROR' or 'CRITICAL' logs in the system):
