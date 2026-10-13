@@ -109,3 +109,31 @@ def generate_crisis_report(data, output_path):
 
     print(f" Scan finished successfully. Scanned {data['total_lines']} lines.")
     print(f" Detailed crisis report saved to '{output_path}'.")
+
+def main():
+    # We create our argparse object and write a description text for our tool.
+    parser = argparse.ArgumentParser(description="LogParser-Sentinel Real Business Case CLI Tool")
+    # We define the '--log' parameter to be taken from the command line as mandatory (required=True).
+    parser.add_argument("--log", required=True, help="Path/Name of the target log file to parse")
+    # We define the output file name parameter; if not specified, we set it to default to crisis_report.txt.
+    parser.add_argument("--output", default="crisis_report.txt", help="Name of the output report text file")
+    
+    # If the command is typed wrong, argparse shuts down the program immediately (with SystemExit).
+    try:
+        args = parser.parse_args()
+    except SystemExit:
+        # We catch this shutdown using a try-except block, allowing the code to print a hint message instead of an error.
+        print(" Hint: You must run the program like: 'python sentinel.py --log server.log'")
+        # We terminate the program with code '1' since it is an error state.
+        sys.exit(1)
+
+    print(" Sentinel System is Starting...")
+    # We pass the log file coming from the argument to our analysis function.
+    # When the function finishes the process, it returns a Dictionary where all the data is collected.
+    results = analyze_log(args.log)
+    # We take the 'results' dictionary obtained from the analysis and the output file name entered from the terminal (args.cikti) and send it to our report generation function.
+    generate_crisis_report(results, args.output)
+
+# It prevents the code from being triggered accidentally by another file, it executes only when run directly from the terminal.
+if __name__ == "__main__":
+    main()
