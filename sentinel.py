@@ -67,3 +67,54 @@ def analyze_log(log_file_path):
 
     # After the entire file is scanned line by line, we return the dictionary that we filled to where the function was called.
     return analysis_data
+
+
+def generate_crisis_report(data, output_path):
+
+    # We open the file in "w" (Write) mode to save the analysis results permanently.
+    with open(output_path, "w", encoding="utf-8") as f:
+        
+        f.write("==================================================\n")
+        f.write("          SENTINEL AUTOMATED ANALYSIS REPORT       \n")
+        f.write("==================================================\n")
+        # We embed the numerical data coming from our analysis dictionary inside the curly braces {}.
+        f.write(f"Total Lines Scanned  : {data['total_lines']}\n")
+        f.write(f"Critical Errors Found: {data['log_counts']['ERROR'] + data['log_counts']['CRITICAL']}\n")
+        f.write(f"Warnings Logged      : {data['log_counts']['WARNING']}\n")
+        f.write("-" * 50 + "\n\n")
+
+        f.write(" TOP SUSPICIOUS NETWORK ADDRESSES (POTENTIAL THREATS):\n")
+        # If our suspicious IP addresses dictionary is completely empty:
+        if not data["suspicious_ips"]:
+            f.write(" - Status Clean: No suspicious IP patterns discovered.\n")
+            
+        # We loop through the IP addresses and their loop repetitions (counts) in the dictionary using the .items() method.
+        for ip, count in data["suspicious_ips"].items():
+            # If an IP address sent 3 or more requests sequentially:
+            if count >= 3:
+                # # We save this suspicious IP and its attack count to the report file using f.write.
+                f.write(f" -> IP: {ip} flagged with {count} malicious requests!\n")
+                
+        f.write("\n" + "-" * 50 + "\n")
+
+        # We write the results of the error detectors (detectors.py) into the report.
+        f.write(f" ERROR SPIKES ({detectors.SPIKE_LIMIT} OR MORE ERRORS IN THE SAME MINUTE):\n")
+        # If no minute reached the error limit:
+        if not data["error_spikes"]:
+            f.write(" - Status Stable: No error spikes found.\n")
+        # We loop through every spike and write its minute and error count.
+        for minute, count in data["error_spikes"]:
+            f.write(f" -> {minute} : {count} errors in one minute!\n")
+        f.write("\n")
+
+        f.write(" ISOLATED CRITICAL CRIDER GONE LOGS:\n")
+        # If our collected crisis lines list is completely empty (Meaning if there are no 'ERROR' or 'CRITICAL' logs in the system):
+        if not data["crisis_lines"]:
+            f.write(" - Status Stable: No critical errors found in logs.\n")
+        # We loop through all the critical error lines accumulated in our list.
+        for crisis_line in data["crisis_lines"]:
+            # We append each critical error to the very bottom of our report file line by line.
+            f.write(crisis_line)
+
+    print(f" Scan finished successfully. Scanned {data['total_lines']} lines.")
+    print(f" Detailed crisis report saved to '{output_path}'.")
