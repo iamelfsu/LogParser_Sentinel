@@ -4,6 +4,8 @@ import argparse
 import sys
 # We add the operating system module to check file and folder paths (os.path).
 import os
+# We add our own detectors.py file, where our error detectors live.
+import detectors
 
 def analyze_log(log_file_path):
     # We check if the file exists on the computer with os.path.exists, and if it is really a file with os.path.isfile.
@@ -65,6 +67,13 @@ def analyze_log(log_file_path):
                     # If an index error occurs during the split process, do not crash the program, just skip (with continue) that line.
                     continue
 
+    # We run the two error detectors from detectors.py and save their results in the same dictionary.
+    analysis_data["error_spikes"] = detectors.find_error_spikes(log_file_path)
+    # The memory detector returns two numbers, so we unpack them into two variables first.
+    memory_alerts, memory_peak = detectors.find_memory_pressure(log_file_path)
+    analysis_data["memory_alerts"] = memory_alerts
+    analysis_data["memory_peak"] = memory_peak
+
     # After the entire file is scanned line by line, we return the dictionary that we filled to where the function was called.
     return analysis_data
 
@@ -77,7 +86,7 @@ def generate_crisis_report(data, output_path):
         f.write("==================================================\n")
         f.write("          SENTINEL AUTOMATED ANALYSIS REPORT       \n")
         f.write("==================================================\n")
-        # We embed the numerical data coming from our analysis dictionary inside the curly braces {}.
+        # We embed the numerical data coming from our analysis dictionary inside the curly braces `{}`.
         f.write(f"Total Lines Scanned  : {data['total_lines']}\n")
         f.write(f"Critical Errors Found: {data['log_counts']['ERROR'] + data['log_counts']['CRITICAL']}\n")
         f.write(f"Warnings Logged      : {data['log_counts']['WARNING']}\n")
@@ -97,6 +106,24 @@ def generate_crisis_report(data, output_path):
                 
         f.write("\n" + "-" * 50 + "\n")
 
+        # We write the results of the error detectors (detectors.py) into the report.
+        f.write(f" ERROR SPIKES ({detectors.SPIKE_LIMIT} OR MORE ERRORS IN THE SAME MINUTE):\n")
+        # If no minute reached the error limit:
+        if not data["error_spikes"]:
+            f.write(" - Status Stable: No error spikes found.\n")
+        # We loop through every spike and write its minute and error count.
+        for minute, count in data["error_spikes"]:
+            f.write(f" -> {minute} : {count} errors in one minute!\n")
+        f.write("\n")
+
+        f.write(f" MEMORY PRESSURE (USAGE OF {detectors.MEMORY_LIMIT}% OR MORE):\n")
+        # If memory never reached the limit:
+        if data["memory_alerts"] == 0:
+            f.write(" - Status Stable: Memory usage stayed under the limit.\n")
+        else:
+            # We write how many times memory went over the limit and the highest value.
+            f.write(f" -> Memory reached {detectors.MEMORY_LIMIT}% or more {data['memory_alerts']} times. Highest: {data['memory_peak']}%.\n")
+        f.write("\n" + "-" * 50 + "\n")
 
         f.write(" ISOLATED CRITICAL CRIDER GONE LOGS:\n")
         # If our collected crisis lines list is completely empty (Meaning if there are no 'ERROR' or 'CRITICAL' logs in the system):
@@ -109,6 +136,7 @@ def generate_crisis_report(data, output_path):
 
     print(f" Scan finished successfully. Scanned {data['total_lines']} lines.")
     print(f" Detailed crisis report saved to '{output_path}'.")
+
 
 def main():
     # We create our argparse object and write a description text for our tool.
