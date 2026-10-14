@@ -5,7 +5,7 @@
   critical errors (`ERROR` + `CRITICAL` counts added together) and warnings
   (Week 3, slide 37 – f-strings; Week 3, slide 13 – reading values from a dictionary).
 - Suspicious IP section: loops over `data["suspicious_ips"].items()` and writes every
-  IP that appears 3 or more times; if the dictionary is empty it writes a "Status Clean"
+  IP that appears 100 or more times; if the dictionary is empty it writes a "Status Clean"
   line instead (Week 3, slide 16 – looping over key–value pairs with `.items()`;
   Week 1 – `if` conditions and comparisons).
 - Error-spike section: loops over the `(minute, count)` tuples in `data["error_spikes"]`
