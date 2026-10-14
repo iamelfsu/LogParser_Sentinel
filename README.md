@@ -18,12 +18,11 @@
 *   **`log_generator.py`**: This serves as our helper test simulation laboratory. It utilizes weighted loops and time deltas to construct a realistic 10,000-line server dataset populated with artificial cyber attack patterns, allowing instant local verification of our core analysis logic.
 *   **`detectors.py`**: This acts as our internal algorithmic monitoring engine. It executes statistical analytics over the row stream, calculating high-frequency error spikes per minute using dictionary wrappers and tracking severe system memory pressure thresholds via robust try-except error containment boundaries.
 *   **`.gitignore`**: A Git configuration layer that programmatically marks runtime file dumps (`server.log` and `crisis_report.txt`) as untracked. This ensures that massive dynamic outputs never clutter or bloat our public upstream repository. 
-*   **`.gitignore`**: A Git configuration layer that programmatically marks runtime file dumps (`server.log` and `crisis_report.txt`) as untracked. This ensures that massive dynamic outputs never clutter or bloat our public upstream repository.
 *   **`README.md`**: This current documentation guide, providing a technical breakdown of the system and mapping our real-world automated business impacts directly to our weekly lecture topics.
 
 ### 👥 The `contributions/` Folder (Group Mandate Compliance)
 As required by the official portfolio guidelines, this dedicated folder contains individual Markdown (`.md`) documentation logs tracking the team's distributed tasks:
-*   **`ELİF_SU_İLERİ_2305041041_iamelfsu.md`**: Developed detectors.py, integrated detectors tp sentimel and finalized the project.
+*   **`ELİF_SU_İLERİ_2305041041_iamelfsu.md`**: Developed detectors.py, integrated detectors to sentinel and finalized the project.
 
 *   **`HİLAL_ONAY_2609011056_nyx78.md`**: Worked on developing the CLI (Command Line Interface) and developed log_generator.py.
 
