@@ -43,8 +43,8 @@ def generate_log(file_name="server.log", line_count=10000):
                 line = f"[{timestamp_str}] ERROR: Error occurred while loading {random.choice(endpoints)}. Status Code: 500 Timeout\n"
             # If it is in the System crisis 'CRITICAL' status, we tried to create a cyber threat situation.
             elif level == "CRITICAL":
-                # If the loop counter happens to be exactly between 50,000 and 50,015 lines, this code leaves a sequential attack trace on the system.
-                if 50000 < i < 50015:
+                # If the loop counter happens to be exactly between 5000 and 5015 lines, this code leaves a sequential attack trace on the system.
+                if 5000 < i < 5015:
                     line = f"[{timestamp_str}] CRITICAL: Unauthorized admin panel access attempt! IP: {attacker_ip}\n"
                 else:
                     # In all other critical situations, we prepared an ordinary database disconnection error case.

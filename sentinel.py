@@ -99,8 +99,8 @@ def generate_crisis_report(data, output_path):
             
         # We loop through the IP addresses and their loop repetitions (counts) in the dictionary using the .items() method.
         for ip, count in data["suspicious_ips"].items():
-            # If an IP address sent 3 or more requests sequentially:
-            if count >= 3:
+            # If an IP address sent 100 or more requests sequentially:
+            if count >= 100:
                 # # We save this suspicious IP and its attack count to the report file using f.write.
                 f.write(f" -> IP: {ip} flagged with {count} malicious requests!\n")
                 
